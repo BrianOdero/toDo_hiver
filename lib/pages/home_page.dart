@@ -29,7 +29,9 @@ class _HomePageState extends State<HomePage>{
     //adding the task to the list
     setState(() {
       toDoList.add([controller.text, false]);
+      controller.clear();//clearing the input field
     });
+    //exit the dialog box after adding a new task
     Navigator.of(context).pop();
   }
 
