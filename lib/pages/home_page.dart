@@ -24,7 +24,16 @@ class _HomePageState extends State<HomePage>{
 
   final controller = TextEditingController();
 
-  //function to createNewTask
+  //function to save the task to hiver
+  void saveNewTask(){
+    //adding the task to the list
+    setState(() {
+      toDoList.add([controller.text, false]);
+    });
+    Navigator.of(context).pop();
+  }
+
+  //function to createNewTask using dialog box
   void createNewTask(){
     //show dialog box
     showDialog(
@@ -32,9 +41,13 @@ class _HomePageState extends State<HomePage>{
       builder: (context){
         return DialogBox(
           controller: controller,
+          onSave: saveNewTask,
+          onCancel:() => Navigator.of(context).pop(),//Dismisses what is in the input field
         );
       });
   }
+
+  
 
   @override
   Widget build(BuildContext contect){

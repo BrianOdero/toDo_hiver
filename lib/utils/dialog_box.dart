@@ -3,9 +3,13 @@ import 'package:todo_hiver/utils/my_button.dart';
 
 class DialogBox extends StatelessWidget {
   final controller;
+  final VoidCallback onSave;
+  final VoidCallback onCancel;
   const DialogBox({
     super.key,
-    required this.controller
+    required this.controller,
+    required this.onSave,
+    required this.onCancel
   });
 
   @override
@@ -33,9 +37,9 @@ class DialogBox extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   //save button
-                  MyButton(text: "Save", onPressed:() {},),
+                  MyButton(text: "Save", onPressed:onSave,),
                   //cancel button
-                  MyButton(text: "Cancel", onPressed:() {},)
+                  MyButton(text: "Cancel", onPressed:onCancel,)
                 ],
               )
 
