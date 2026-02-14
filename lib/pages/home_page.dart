@@ -49,6 +49,14 @@ class _HomePageState extends State<HomePage>{
       });
   }
 
+  //function to delete task
+  void deleteTask(int index){
+    //delete task from list
+    setState(() {
+      toDoList.removeAt(index);
+    });
+  }
+
   
 
   @override
@@ -75,7 +83,8 @@ class _HomePageState extends State<HomePage>{
             return TodoTile(
               taskName: toDoList[index][0], 
               taskCompleted: toDoList[index][1], 
-              onChanged:(value) => checkBoxChanged(value, index)
+              onChanged:(value) => checkBoxChanged(value, index),
+              deleteNote:(context) => deleteTask,
             );
           },
 
