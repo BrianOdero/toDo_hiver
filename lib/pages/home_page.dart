@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:todo_hiver/data/database.dart';
 import 'package:todo_hiver/utils/dialog_box.dart';
 import 'package:todo_hiver/utils/todo_tile.dart';
 class HomePage extends StatefulWidget{
@@ -8,18 +10,36 @@ class HomePage extends StatefulWidget{
 }
 class _HomePageState extends State<HomePage>{
 
-  //list of the todo List
-  List toDoList = [
-    ["Make Brekfast", true],
-    ["Make Lunch", false],
-    
-  ];
+  //referencing the hive databaase
+  final mybox = Hive.box("mybox");
+
+  //instantiating the database
+  ToDoDatabase db = ToDoDatabase();
+
+  @override
+  void initState() {
+    // if its the first time creating the app then create default data
+    if(mybox.get("TODOLIST") == null){
+      db.createInitialData();
+    }
+    else{
+    //There already exists data
+      db.loadData();
+    }
+
+
+
+    super.initState();
+  }
+
+
 
   //checkBoxChanged Function and int is used to track the specific task
   void checkBoxChanged(bool? value, int index){
     setState(() {
-      toDoList[index][1] = !toDoList[index][1];
+      db.toDoList[index][1] = !db.toDoList[index][1];
     });
+    db.updateDataBase();
   }
 
   final controller = TextEditingController();
@@ -28,11 +48,12 @@ class _HomePageState extends State<HomePage>{
   void saveNewTask(){
     //adding the task to the list
     setState(() {
-      toDoList.add([controller.text, false]);
+      db.toDoList.add([controller.text, false]);
       controller.clear();//clearing the input field
     });
     //exit the dialog box after adding a new task
     Navigator.of(context).pop();
+    db.updateDataBase();
   }
 
   //function to createNewTask using dialog box
@@ -53,8 +74,9 @@ class _HomePageState extends State<HomePage>{
   void deleteTask(int index){
     //delete task from list
     setState(() {
-      toDoList.removeAt(index);
+      db.toDoList.removeAt(index);
     });
+    db.updateDataBase();
   }
 
   
@@ -78,11 +100,11 @@ class _HomePageState extends State<HomePage>{
        
       //using a dynamic listview
       body: ListView.builder(
-          itemCount: toDoList.length,
+          itemCount: db.toDoList.length,
           itemBuilder: (context, index) {
             return TodoTile(
-              taskName: toDoList[index][0], 
-              taskCompleted: toDoList[index][1], 
+              taskName: db.toDoList[index][0], 
+              taskCompleted: db.toDoList[index][1], 
               onChanged:(value) => checkBoxChanged(value, index),
               deleteNote:(context) => deleteTask,
             );
